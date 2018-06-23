@@ -50,7 +50,7 @@
         events = {n: {}},
         firstDefined = function () {
             for (var i = 0, ii = this.length; i < ii; i++) {
-                if (typeof this[i] != "undefined") {
+                if (typeof this[i] != "undefined" && this[i] != null) {
                     return this[i];
                 }
             }
@@ -58,7 +58,7 @@
         lastDefined = function () {
             var i = this.length;
             while (--i) {
-                if (typeof this[i] != "undefined") {
+                if (typeof this[i] != "undefined" && this[i] != null) {
                     return this[i];
                 }
             }
@@ -3681,8 +3681,10 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         var fkeys = [], tkeys = [], keys = {}, from, to, f, eq,
             el = this;
         for (var key in attrs) if (attrs[has](key)) {
+            console.log(key);
             if (el.equal) {
                 eq = el.equal(key, Str(attrs[key]));
+                console.log(key, attrs[key]);
                 from = eq.from;
                 to = eq.to;
                 f = eq.f;
@@ -3695,6 +3697,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             fkeys = fkeys.concat(from);
             tkeys = tkeys.concat(to);
         }
+        console.log(from, to, fkeys, tkeys);
         var now = mina.time(),
             anim = mina(fkeys, tkeys, now, now + ms, mina.time, function (val) {
                 var attr = {};
@@ -7522,6 +7525,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return eve("snap.util.equal", this, name, b).firstDefined();
     };
     eve.on("snap.util.equal", function (name, b) {
+        console.log(name, b);
         var A, B, a = Str(this.attr(name) || ""),
             el = this;
         if (names[name] == "colour") {
@@ -7564,7 +7568,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 f: getPath(A[0])
             };
         }
-        if (name == "points") {
+        if (name == "points" || name == "center") {
             A = Str(a).split(Snap._.separator);
             B = Str(b).split(Snap._.separator);
             return {
